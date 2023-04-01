@@ -70,15 +70,16 @@
         });
       }
 
-      document.addEventListener("keydown", function(event) {
-        if (event.code === "Space") {
+      window.addEventListener("resize", function() {
+        if (window.innerWidth > window.innerHeight) {
+          console.log("Yesssssssss!!");
           document.querySelector('canvas').requestFullscreen();
+        } else {
+          console.log("Nooooooo!!");
+          document.querySelector('canvas').exitFullscreen(); 
         }
       });
-      
-      document.addEventListener("click", function(event) {
-          document.querySelector('canvas').requestFullscreen();
-      });
+
     </script>
   </body>
 </html>
