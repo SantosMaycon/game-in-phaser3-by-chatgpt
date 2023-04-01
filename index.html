@@ -1,87 +1,74 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Exemplo de jogo Phaser 3 com joystick virtual e tela cheia para mobile</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tela de Menu Interativa</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      canvas {
+        display: block;
+      }
+
+      #menu {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-family: Arial, sans-serif;
+        text-align: center;
+        color: #ffffff;
+        font-size: 48px;
+        cursor: pointer;
+      }
     </style>
-</head>
-<body>
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3.63.0/dist/phaser.min.js"></script>
-    <script src="https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js"></script>
+  </head>
+  <body>
+    <div id="menu">Clique para jogar</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.1/dist/phaser.min.js"></script>
     <script>
-        var config = {
-            type: Phaser.AUTO,
-            width: 800,
-            height: 600,
-            backgroundColor: '#2d2d2d',
-            physics: {
-                default: 'arcade',
-                arcade: {
-                    gravity: { y: 0 },
-                    debug: false
-                }
-            },
-            scene: {
-                preload: preload,
-                create: create,
-                update: update
-            }
-        };
+      const config = {
+        type: Phaser.AUTO,
+        width: window.innerWidth,
+        height: window.innerHeight,
+        scene: {
+          preload: preload,
+          create: create,
+        },
+        scale: {
+          mode: Phaser.Scale.FIT,
+          autoCenter: Phaser.Scale.CENTER_BOTH,
+        },
+      };
 
-        var game = new Phaser.Game(config);
+      const game = new Phaser.Game(config);
 
-        var player;
-        var speed = 200;
-        var joystick;
+      function preload() {}
 
-        function preload() {
-            this.load.plugin('rexvirtualjoystickplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js', true);
-        }
+      function create() {
+        const menu = this.add.text(
+          this.game.config.width / 2,
+          this.game.config.height / 2,
+          "Clique para jogar",
+          {
+            fontFamily: "Arial, sans-serif",
+            fontSize: "48px",
+          }
+        );
 
-        function create() {
-            // Crie o jogador (retângulo azul)
-            player = this.add.rectangle(400, 300, 50, 50, 0x00aaff);
+        menu.setOrigin(0.5);
 
-            // Crie o joystick virtual
-            joystick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
-                x: 100,
-                y: 100,
-                radius: 50,
-                base: this.add.circle(0, 0, 50, 0x888888),
-                thumb: this.add.circle(0, 0, 25, 0xcccccc),
-                forceMin: 16,
-                enable: true
-            });
+        menu.setInteractive({ useHandCursor: true });
 
-            // habilita o modo de tela cheia
-            function enableFullScreen() {
-                var doc = window.document;
-                var docEl = doc.documentElement;
-
-                var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-                if (requestFullScreen) {
-                    requestFullScreen.call(docEl);
-                }
-            }
-
-            // chama a função quando a página estiver carregada
-            window.onload = function() {
-                enableFullScreen();
-            };
-        }
-
-        function update() {
-            // Atualize o movimento do jogador com base na posição do joystick
-            player.x += joystick.forceX * speed;
-            player.y += joystick.forceY * speed;
-        }
+        menu.on("pointerdown", () => {
+          this.scene.start("game");
+        });
+      }
     </script>
-</body>
+  </body>
 </html>
