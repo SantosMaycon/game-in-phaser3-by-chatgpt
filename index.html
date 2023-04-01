@@ -70,7 +70,15 @@
         });
       }
 
-      document.querySelector('canvas').requestFullscreen();
+      document.addEventListener("keydown", function(event) {
+        if (event.code === "Space") {
+          document.querySelector('canvas').requestFullscreen();
+        }
+      });
+      
+      document.addEventListener("click", function(event) {
+          document.querySelector('canvas').requestFullscreen();
+      });
     </script>
   </body>
 </html>
