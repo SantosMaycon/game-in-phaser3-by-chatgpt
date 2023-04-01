@@ -42,13 +42,12 @@
         var joystick;
 
         function preload() {
-            this.load.image('player', 'assets/player.png');
             this.load.plugin('rexvirtualjoystickplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js', true);
         }
 
         function create() {
-            // Crie o jogador
-            player = this.physics.add.sprite(400, 300, 'player');
+            // Crie o jogador (retângulo azul)
+            player = this.add.rectangle(400, 300, 50, 50, 0x00aaff);
 
             // Crie o joystick virtual
             joystick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
@@ -80,7 +79,8 @@
 
         function update() {
             // Atualize o movimento do jogador com base na posição do joystick
-            player.setVelocity(joystick.forceX * speed, joystick.forceY * speed);
+            player.x += joystick.forceX * speed;
+            player.y += joystick.forceY * speed;
         }
     </script>
 </body>
