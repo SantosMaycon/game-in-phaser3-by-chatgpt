@@ -49,6 +49,20 @@
         };
 
         var game = new Phaser.Game(config);
+
+        function enableFullScreen() {
+            var doc = window.document;
+            var docEl = doc.documentElement;
+
+            var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+            if (requestFullScreen) {
+                requestFullScreen.call(docEl);
+            }
+        }
+
+        window.onload = function() {
+            enableFullScreen();
+        };
     </script>
 </body>
 </html>
