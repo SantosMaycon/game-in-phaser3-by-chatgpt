@@ -1,28 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Phaser 3 Simple Top-Down Game</title>
-    <script src="https://cdn.jsdelivr.net/npm/phaser/dist/phaser.min.js"></script>
+    <meta charset="utf-8">
+    <title>Exemplo de jogo Phaser 3 com joystick virtual e tela cheia para mobile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        html,
         body {
             margin: 0;
             padding: 0;
             overflow: hidden;
         }
-        canvas {
-            display: block;
-        }
     </style>
 </head>
 <body>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.63.0/dist/phaser.min.js"></script>
+    <script src="https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js"></script>
     <script>
         var config = {
             type: Phaser.AUTO,
-            width: window.innerWidth,
-            height: window.innerHeight,
+            width: 800,
+            height: 600,
+            backgroundColor: '#2d2d2d',
             physics: {
                 default: 'arcade',
                 arcade: {
@@ -31,38 +29,59 @@
                 }
             },
             scene: {
-                preload: function() {
-                    this.load.image('player', 'assets/player.png');
-                },
-                create: function() {
-                    var player = this.physics.add.image(config.width / 2, config.height / 2, 'player');
-                    player.setCollideWorldBounds(true);
-
-                    this.input.on('pointermove', function (pointer) {
-                        player.setVelocity(pointer.velocity.x, pointer.velocity.y);
-                    });
-                },
-                update: function() {
-                    // nothing to update yet
-                }
+                preload: preload,
+                create: create,
+                update: update
             }
         };
 
         var game = new Phaser.Game(config);
 
-        function enableFullScreen() {
-            var doc = window.document;
-            var docEl = doc.documentElement;
+        var player;
+        var speed = 200;
+        var joystick;
 
-            var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-            if (requestFullScreen) {
-                requestFullScreen.call(docEl);
-            }
+        function preload() {
+            this.load.image('player', 'assets/player.png');
+            this.load.plugin('rexvirtualjoystickplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js', true);
         }
 
-        window.onload = function() {
-            enableFullScreen();
-        };
+        function create() {
+            // Crie o jogador
+            player = this.physics.add.sprite(400, 300, 'player');
+
+            // Crie o joystick virtual
+            joystick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
+                x: 100,
+                y: 100,
+                radius: 50,
+                base: this.add.circle(0, 0, 50, 0x888888),
+                thumb: this.add.circle(0, 0, 25, 0xcccccc),
+                forceMin: 16,
+                enable: true
+            });
+
+            // habilita o modo de tela cheia
+            function enableFullScreen() {
+                var doc = window.document;
+                var docEl = doc.documentElement;
+
+                var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+                if (requestFullScreen) {
+                    requestFullScreen.call(docEl);
+                }
+            }
+
+            // chama a função quando a página estiver carregada
+            window.onload = function() {
+                enableFullScreen();
+            };
+        }
+
+        function update() {
+            // Atualize o movimento do jogador com base na posição do joystick
+            player.setVelocity(joystick.forceX * speed, joystick.forceY * speed);
+        }
     </script>
 </body>
 </html>
